@@ -36,6 +36,13 @@ static void sigintHandler(int x) {
 int main(int argc, char *argv[]) {
 
   char buffer[2048]; // declare a 2Kb buffer to read packet data into
+  int port;
+
+  if (argc == 2) {
+    sscanf(argv[1], "%d", &port);
+  } else {
+    port = 9000;
+  }
 
   printf("Starting write tests:\n");
   int len = 0;
@@ -53,10 +60,10 @@ int main(int argc, char *argv[]) {
   fcntl(fd, F_SETFL, O_NONBLOCK); // set the socket to non-blocking
   struct sockaddr_in sin;
   sin.sin_family = AF_INET;
-  sin.sin_port = htons(9000);
+  sin.sin_port = htons(port);
   sin.sin_addr.s_addr = INADDR_ANY;
   bind(fd, (struct sockaddr *) &sin, sizeof(struct sockaddr_in));
-  printf("tinyosc is now listening on port 9000.\n");
+  printf("tinyosc is now listening on %d.\n", port);
   printf("Press Ctrl+C to stop.\n");
 
   while (keepRunning) {
